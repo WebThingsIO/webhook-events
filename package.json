@@ -1,0 +1,35 @@
+{
+  "name": "webhook-events",
+  "version": "0.0.1",
+  "description": "Webhook events add-on for WebThings Gateway",
+  "author": "WebThingsIO",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "homepage": "https://github.com/WebThingsIO/webhook-events",
+  "license": "MPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WebThingsIO/webhook-events.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WebThingsIO/webhook-events/issues"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.14.0"
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "SHA256SUMS",
+    "css/extension.css",
+    "adapter.js",
+    "api-handler.js",
+    "index.js",
+    "js/extension.js",
+    "manifest.json",
+    "views/content.html"
+  ]
+}

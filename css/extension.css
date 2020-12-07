@@ -1,0 +1,22 @@
+#extension-webhook-events-view {
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+#extension-webhook-events-content > h2 {
+  padding-top: 5rem;
+}
+
+#extension-webhook-events-content {
+  position: relative;
+  left: 9.6rem;
+  max-height: 100%;
+  text-align: left;
+  font-size: 1.6rem;
+  color: #fff;
+  max-width: calc(100% - 9.2rem);
+}
+
+#extension-webhook-events-thing-description {
+  overflow-x: auto;
+}
