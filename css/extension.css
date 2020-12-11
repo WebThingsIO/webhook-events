@@ -14,9 +14,12 @@
   text-align: left;
   font-size: 1.6rem;
   color: #fff;
-  max-width: calc(100% - 9.2rem);
+  max-width: calc(100% - 19.2rem);
 }
 
-#extension-webhook-events-thing-description {
+#extension-webhook-events-endpoint-list > dd {
   overflow-x: auto;
+  white-space: nowrap;
+  font-family: monospace;
+  margin-bottom: 2rem;
 }

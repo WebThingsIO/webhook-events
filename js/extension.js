@@ -7,12 +7,18 @@
 
     load() {
       this.content = '';
-      return fetch(`/extensions/${this.id}/views/content.html`)
-        .then((res) => res.text())
-        .then((text) => {
-          this.content = text;
-        })
-        .catch((e) => console.error('Failed to fetch content:', e));
+      return window.API.getJson(
+        `/extensions/${this.id}/api/config`
+      ).then((config) => {
+        this.config = config;
+        return fetch(`/extensions/${this.id}/views/content.html`);
+      }).then((res) => {
+        return res.text();
+      }).then((text) => {
+        this.content = text;
+      }).catch((e) => {
+        console.error('Failed to fetch content:', e);
+      });
     }
 
     show(context) {
@@ -26,13 +32,21 @@
         return;
       }
 
-      const description = document.getElementById(
-        'extension-webhook-events-thing-description'
+      const list = document.getElementById(
+        'extension-webhook-events-endpoint-list'
       );
 
-      description.innerText =
-        `GET ${window.location.origin}/extensions/${
-          this.id}/api/generate-event?name=<event-name>&jwt=${window.API.jwt}`;
+      const baseUrl = `${window.location.origin}/extensions/${this.id}/api/`;
+      for (const hook of this.config.hooks) {
+        const dt = document.createElement('dt');
+        dt.innerHTML = `<b>Name:</b> ${hook.name}`;
+
+        const dd = document.createElement('dd');
+        dd.innerText = `${baseUrl}${hook.id}?jwt=${window.API.jwt}`;
+
+        list.appendChild(dt);
+        list.appendChild(dd);
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "webhook-events",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Webhook events add-on for WebThings Gateway",
   "author": "WebThingsIO",
   "main": "index.js",

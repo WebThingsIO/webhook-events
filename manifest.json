@@ -26,24 +26,57 @@
   "name": "Webhook Events",
   "options": {
     "default": {
-      "events": []
+      "hooks": []
     },
     "schema": {
       "type": "object",
       "properties": {
-        "events": {
+        "hooks": {
           "type": "array",
-          "title": "Events",
-          "description": "List of event names that can be generated",
+          "title": "Hooks",
+          "description": "List of hooks to generate",
           "items": {
-            "type": "string"
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "title": "Name",
+                "description": "Unique name for this hook. The name will be used for the corresponding event and property.",
+                "type": "string"
+              },
+              "id": {
+                "title": "Unique ID",
+                "description": "This will be generated for you.",
+                "type": "string",
+                "readOnly": true
+              },
+              "propertyKey": {
+                "title": "Property Key",
+                "description": "If a value is going to be parsed out of the hook data, this is the name of the property to parse.",
+                "type": "string"
+              },
+              "propertyValueType": {
+                "title": "Property Value Type",
+                "description": "Type of data that is being parsed for the property.",
+                "type": "string",
+                "enum": [
+                  "string",
+                  "number",
+                  "integer",
+                  "boolean"
+                ],
+                "default": "string"
+              }
+            }
           }
         }
       }
     }
   },
   "short_name": "Webhook",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "web_accessible_resources": [
     "css/*.css",
     "js/*.js",

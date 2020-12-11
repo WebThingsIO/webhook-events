@@ -1,10 +1,12 @@
 'use strict';
 
+const crypto = require('crypto');
 const {
   Adapter,
   Database,
   Device,
   Event,
+  Property,
 } = require('gateway-addon');
 const WebhookEventsAPIHandler = require('./api-handler');
 const manifest = require('./manifest.json');
@@ -14,9 +16,32 @@ class WebhookEventsDevice extends Device {
     super(adapter, 'webhook-events');
 
     this.name = 'Webhook Events';
+    this.config = config;
 
-    for (const event of config.events) {
-      this.addEvent(event, {title: event});
+    for (const hook of config.hooks) {
+      if (hook.propertyKey) {
+        this.addEvent(
+          hook.name,
+          {
+            title: hook.name,
+            type: hook.propertyValueType,
+          }
+        );
+        this.properties.set(
+          hook.name,
+          new Property(
+            this,
+            hook.name,
+            {
+              title: hook.name,
+              type: hook.propertyValueType,
+              readOnly: true,
+            }
+          )
+        );
+      } else {
+        this.addEvent(hook.name, {title: hook.name});
+      }
     }
 
     this.links.push({
@@ -27,8 +52,17 @@ class WebhookEventsDevice extends Device {
     });
   }
 
-  triggerEvent(name) {
-    this.eventNotify(new Event(this, name));
+  triggerEvent(id, value) {
+    for (const hook of this.config.hooks) {
+      if (id === hook.id) {
+        this.eventNotify(new Event(this, hook.name, value));
+
+        if (this.properties.has(hook.name)) {
+          const property = this.properties.get(hook.name);
+          property.setCachedValueAndNotify(value);
+        }
+      }
+    }
   }
 }
 
@@ -41,9 +75,26 @@ class WebhookEventsAdapter extends Adapter {
     db.open().then(() => {
       return db.loadConfig();
     }).then((config) => {
-      this.device = new WebhookEventsDevice(this, config);
+      if (!config.hooks) {
+        config.hooks = [];
+      }
+
+      for (const hook of config.hooks) {
+        if (!hook.id) {
+          hook.id = `${crypto.randomBytes(16).toString('hex')}`;
+        }
+      }
+
+      this.config = config;
+      return db.saveConfig(config);
+    }).then(() => {
+      this.device = new WebhookEventsDevice(this, this.config);
       this.handleDeviceAdded(this.device);
-      this.apiHandler = new WebhookEventsAPIHandler(addonManager, this);
+      this.apiHandler = new WebhookEventsAPIHandler(
+        addonManager,
+        this,
+        this.config
+      );
     }).catch(console.error);
   }
 
