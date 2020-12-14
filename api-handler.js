@@ -41,9 +41,16 @@ class WebhookEventsAPIHandler extends APIHandler {
       return new APIResponse({status: 404});
     }
 
-    let value;
+    let value = request.body;
     if (hook.propertyKey) {
-      value = request.body[hook.propertyKey];
+      for (const part of hook.propertyKey.split('.')) {
+        if (!Object.prototype.hasOwnProperty.call(value, part)) {
+          value = null;
+          break;
+        }
+
+        value = value[part];
+      }
     }
 
     this.adapter.device.triggerEvent(request.path.split('/')[1], value);
