@@ -43,6 +43,13 @@ class WebhookEventsAPIHandler extends APIHandler {
 
     let value = request.body;
     if (hook.propertyKey) {
+      // Decode a top-level 'payload' key, if present.
+      if (Object.keys(value).length === 1 &&
+          Object.prototype.hasOwnProperty.call(value, 'payload') &&
+          typeof value.payload === 'string') {
+        value = JSON.parse(value.payload);
+      }
+
       for (const part of hook.propertyKey.split('.')) {
         if (!Object.prototype.hasOwnProperty.call(value, part)) {
           value = null;
