@@ -41,26 +41,33 @@ class WebhookEventsAPIHandler extends APIHandler {
       return new APIResponse({status: 404});
     }
 
-    let value = request.body;
-    if (hook.propertyKey) {
-      // Decode a top-level 'payload' key, if present.
-      if (Object.keys(value).length === 1 &&
-          Object.prototype.hasOwnProperty.call(value, 'payload') &&
-          typeof value.payload === 'string') {
-        value = JSON.parse(value.payload);
-      }
+    if (hook.properties && hook.properties.length > 0) {
+      for (const prop of hook.properties) {
+        let value = request.body;
 
-      for (const part of hook.propertyKey.split('.')) {
-        if (!Object.prototype.hasOwnProperty.call(value, part)) {
-          value = null;
-          break;
+        // Decode a top-level 'payload' key, if present.
+        if (Object.keys(value).length === 1 &&
+            Object.prototype.hasOwnProperty.call(value, 'payload') &&
+            typeof value.payload === 'string') {
+          value = JSON.parse(value.payload);
         }
 
-        value = value[part];
+        for (const part of prop.key.split('.')) {
+          if (!Object.prototype.hasOwnProperty.call(value, part)) {
+            value = null;
+            break;
+          }
+
+          value = value[part];
+        }
+
+        console.log('Triggering:', prop.key);
+        this.adapter.device.triggerEvent(hook.id, prop.key, value);
       }
+    } else {
+      this.adapter.device.triggerEvent(hook.id);
     }
 
-    this.adapter.device.triggerEvent(request.path.split('/')[1], value);
     return new APIResponse({status: 201});
   }
 }

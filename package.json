@@ -1,6 +1,6 @@
 {
   "name": "webhook-events",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Webhook events add-on for WebThings Gateway",
   "author": "WebThingsIO",
   "main": "index.js",
@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.14.0"
+    "eslint": "^7.16.0"
   },
   "files": [
     "LICENSE",
